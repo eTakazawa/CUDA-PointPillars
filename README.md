@@ -1,3 +1,48 @@
+# About
+- Hardware
+  - Jetson Orin Nano 8GB
+- Software
+  -	Jetson Linux: 36.4.0 / JetPack: 6.1
+  -	CUDA: 12.6.68
+  -	cuDNN: 9.3.0.75
+  -	TensorRT: 10.3.0.30
+
+I confirmed that pointpillar works in the above environment.  
+It was necessary to support version updates of CUDA and TensorRT.
+
+## Compile && Run
+
+```shell
+sudo apt-get install git-lfs && git lfs install
+git clone https://github.com/NVIDIA-AI-IOT/CUDA-PointPillars.git
+cd CUDA-PointPillars && . tool/environment.sh
+mkdir build && cd build
+cmake .. -DCUDA_NVCC_FLAGS="--std c++14" && make -j$(nproc)
+cd ../ && sh tool/build_trt_engine.sh
+cd build && ./pointpillar ../data/ ../data/ --timer
+```
+
+```shell
+...
+<<<<<<<<<<<
+Load file: ../data/000007.bin
+Lidar points count: 19423
+==================PointPillars===================
+[⏰ [NoSt] CopyLidar]:  0.09187 ms
+[⏰ Lidar Voxelization]:        0.43242 ms
+[⏰ Lidar Backbone & Head]:     20.35830 ms
+[⏰ Lidar Decoder + NMS]:       3.95037 ms
+Total: 24.741 ms
+=============================================
+Detections after NMS: 11
+Saved prediction in: ../data/000007.txt
+>>>>>>>>>>>
+```
+
+---
+
+Original README.md
+
 # PointPillars Inference with TensorRT
 
 This repository contains sources and model for [pointpillars](https://arxiv.org/abs/1812.05784) inference using TensorRT.
